@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APPPKEYYYYYY300103</title>
+
+    <!-- main.js es un modulo, desde ahi se importa todo lo de app/ -->
+    <script src="main.js" type="module"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<header class="topbar">
+  <span class="brand">APPPKEYYYYYY300103</span>
+  <ul class="topbar-nav">
+    <!-- sin sesion -->
+    <li class="logged-out">
+      <a href="#" class="link-nav" data-bs-target="#singin-modal" data-bs-toggle="modal">Iniciar sesión</a>
+    </li>
+    <li class="logged-out">
+      <a href="#" class="btn btn-dark" data-bs-target="#singup-modal" data-bs-toggle="modal">Crear cuenta</a>
+    </li>
+    <!-- con sesion -->
+    <li class="logged-in">
+      <span class="usuario"><span class="avatar" id="user-avatar"></span><span id="user-email"></span></span>
+    </li>
+    <li class="logged-in">
+      <button type="button" class="btn btn-outline-secondary" id="logout">Cerrar sesión</button>
+    </li>
+  </ul>
+</header>
+
+<!-- ===================== SIN SESION ===================== -->
+<section class="logged-out" id="landing">
+  <div class="landing">
+    <div class="landing-texto">
+      <h1>Tus productos, en un solo lugar.</h1>
+      <p>Inicia sesión para registrar, editar y ver tus productos. Cada cuenta ve solo lo suyo.</p>
+      <div class="landing-botones">
+        <button type="button" class="btn btn-dark" data-bs-target="#singin-modal" data-bs-toggle="modal">Iniciar sesión</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-target="#singup-modal" data-bs-toggle="modal">Crear cuenta</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CON SESION: PRODUCTOS ===================== -->
+<section class="logged-in" id="productos">
+  <main class="contenido">
+    <div class="titulo-pagina">
+      <h1>Productos</h1>
+      <span id="contador-productos" class="texto-suave"></span>
+    </div>
+
+    <div class="layout-productos">
+
+      <!-- formulario para registrar un producto -->
+      <form id="product-form" class="tarjeta formulario">
+        <h2>Nuevo producto</h2>
+
+        <div class="campo">
+          <label for="product-name">Nombre</label>
+          <input type="text" id="product-name" class="form-control" placeholder="Nombre del producto" required>
+        </div>
+        <div class="campo">
+          <label for="product-description">Descripción</label>
+          <textarea id="product-description" class="form-control" rows="2" placeholder="Breve descripción" required></textarea>
+        </div>
+        <div class="fila-2">
+          <div class="campo">
+            <label for="product-price">Precio</label>
+            <input type="number" id="product-price" class="form-control" placeholder="$0.00" min="0" step="0.01" required>
+          </div>
+          <div class="campo">
+            <label for="product-stock">Existencias</label>
+            <input type="number" id="product-stock" class="form-control" placeholder="0" min="0" step="1" required>
+          </div>
+        </div>
+        <div class="campo">
+          <label for="product-category">Categoría</label>
+          <select id="product-category" class="form-select" required>
+            <option value="">Selecciona una categoría</option>
+            <option>Electrónica</option>
+            <option>Ropa y accesorios</option>
+            <option>Hogar</option>
+            <option>Alimentos</option>
+            <option>Papelería</option>
+            <option>Otros</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <div class="campo-titulo">
+            <label for="product-images">Imágenes</label>
+            <span id="product-images-count" class="texto-suave">0 de 5</span>
+          </div>
+          <label for="product-images" class="zona-imagenes" id="zona-imagenes">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+            <span>Selecciona de 1 a 5 imágenes</span>
+            <small class="texto-suave">JPG, PNG o WebP</small>
+          </label>
+          <input type="file" id="product-images" accept="image/*" multiple hidden>
+          <div id="product-preview" class="preview"></div>
+          <p id="product-images-error" class="mensaje-error" role="alert"></p>
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100" id="product-submit">Guardar producto</button>
+      </form>
+
+      <!-- aqui se pintan los productos del usuario -->
+      <div id="product-list" class="lista-productos"></div>
+    </div>
+  </main>
+</section>
+
+<!-- ===================== MODAL SIGNIN ===================== -->
+<div class="modal fade" id="singin-modal" tabindex="-1" aria-labelledby="signin-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="signin-title">Iniciar sesión</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="login-form">
+          <div class="campo">
+            <label for="login-email">Correo</label>
+            <input type="email" id="login-email" class="form-control" placeholder="tu@correo.com" required>
+          </div>
+          <div class="campo">
+            <label for="login-password">Contraseña</label>
+            <input type="password" id="login-password" class="form-control" placeholder="••••••" required>
+          </div>
+          <button type="submit" class="btn btn-dark w-100">Entrar</button>
+        </form>
+
+        <div class="separador"><span>o continúa con</span></div>
+
+        <div class="proveedores">
+          <button type="button" class="btn btn-outline-secondary" id="google-login">Google</button>
+          <button type="button" class="btn btn-outline-secondary" id="microsoft-login">Microsoft</button>
+          <button type="button" class="btn btn-outline-secondary" id="github-login">GitHub</button>
+          <button type="button" class="btn btn-outline-secondary" id="yahoo-login">Yahoo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL SIGNUP ===================== -->
+<div class="modal fade" id="singup-modal" tabindex="-1" aria-labelledby="signup-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="signup-title">Crear cuenta</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="singup-form">
+          <div class="campo">
+            <label for="singup-email">Correo</label>
+            <input type="email" id="singup-email" class="form-control" placeholder="tu@correo.com" required>
+          </div>
+          <div class="campo">
+            <label for="singup-password">Contraseña</label>
+            <input type="password" id="singup-password" class="form-control" placeholder="Mínimo 6 caracteres" required>
+          </div>
+          <button type="submit" class="btn btn-dark w-100">Crear cuenta</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL EDITAR PRODUCTO ===================== -->
+<div class="modal fade" id="edit-modal" tabindex="-1" aria-labelledby="edit-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <form class="modal-content" id="edit-form">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="edit-title">Editar producto</h2>
+          <span class="texto-suave">Los cambios se guardan en tu cuenta</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="campo">
+          <label for="edit-name">Nombre</label>
+          <input type="text" id="edit-name" class="form-control" required>
+        </div>
+        <div class="campo">
+          <label for="edit-description">Descripción</label>
+          <textarea id="edit-description" class="form-control" rows="3" required></textarea>
+        </div>
+        <div class="fila-3">
+          <div class="campo">
+            <label for="edit-price">Precio</label>
+            <input type="number" id="edit-price" class="form-control" min="0" step="0.01" required>
+          </div>
+          <div class="campo">
+            <label for="edit-category">Categoría</label>
+            <select id="edit-category" class="form-select" required>
+              <option>Electrónica</option>
+              <option>Ropa y accesorios</option>
+              <option>Hogar</option>
+              <option>Alimentos</option>
+              <option>Papelería</option>
+              <option>Otros</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="edit-stock">Existencias</label>
+            <input type="number" id="edit-stock" class="form-control" min="0" step="1" required>
+          </div>
+        </div>
+        <div class="campo">
+          <div class="campo-titulo">
+            <span class="etiqueta">Imágenes</span>
+            <span id="edit-images-count" class="texto-suave">0 de 5</span>
+          </div>
+          <div id="edit-images" class="preview editar"></div>
+          <input type="file" id="edit-images-input" accept="image/*" multiple hidden>
+          <p id="edit-images-error" class="mensaje-error" role="alert"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link texto-peligro" id="edit-delete">Eliminar producto</button>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-dark" id="edit-submit">Guardar cambios</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
